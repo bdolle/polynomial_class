@@ -171,12 +171,34 @@ class Polynomial():
       sum = sum + self.D[i]*(arg**i)
     return sum
 
+  def __eq__(self, other):
+    if len(self.D) != len(other.D):
+      return False
+    else:
+      for i in self.D and other.D:
+        if self.D[i] == other.D[i]:
+          return True
+        else:
+          return False
+
+
+  def __ne__(self, other):
+    if len(self.D) != len(other.D):
+      return True
+    else:
+      for i in self.D and other.D:
+        if self.D[i] == other.D[i]:
+          return False
+        else:
+          return True
 
 c = Polynomial([4,0,0,0])
-c[-2] = 1
+# c[-2] = 1
+d = Polynomial([3,0,0,0])
+print(c!=d)
 # g = c.deriv()
-g = c.eval(3)
-print(g)
+# g = c.eval(3)
+# print(g)
 # c = Polynomial([5,0,0,4,6])
 # print(c[1])
 # c[-3] = 8
