@@ -1,3 +1,5 @@
+# Copyright 2020 Brian Dolle bdolle@bu.edu
+# Copyright 2020 Poras Shroff pshroff4@bu.edu
 
 class Polynomial():
   """ Modelling Polynomials """
@@ -7,10 +9,16 @@ class Polynomial():
     "descending indexes and 0s are ignored"
     self.seq = seq
     self.D = dict()
-    seq.reverse()
+    # print(len(self.seq)-1)
+    a_list = []
     for i in range(len(self.seq)):
-      if self.seq[i] != 0:
-        self.D[i] = self.seq[i]
+      a_list.append(self.seq[i])
+    #   a_list[i] = self.seq[i]
+    a_list.reverse()
+    for i in range(len(a_list)):
+      if a_list[i] != 0:
+        self.D[i] = a_list[i]
+    # print(self.D)
 
 
   def __repr__(self):
@@ -102,6 +110,35 @@ class Polynomial():
     new_p.D = self.b
     return new_p
 
+  def __sub__(self,value):
+    "Return self+value."
+    self.b = dict()
+    new_p = Polynomial()
+    # pull all the non-zero entries in d
+    for i in self.D:
+      # if there is also an entry of same key in c, add them, but
+      # only if adding them doesn't give zero. If it does, skip.
+      if i in value.D:
+        if self.D[i] - value.D[i] != 0:
+          self.b[i] = self.D[i] - value.D[i]
+        else:
+          pass
+      # If there not an entry of same key in c, just set
+      else:
+        self.b[i] = self.D[i]
+
+    # Now check for all non-zero entries of c
+    for i in value.D:
+      # If there is a value in d at i, pass, bc did it above 
+      if i in self.D:
+        pass
+      #  If not value in d at i, just set b = c
+      else:
+        self.b[i] = -value.D[i]
+    # print(b)
+    new_p.D = self.b
+    return new_p
+
 
   def __radd__(self,value):
     "Return self+value."
@@ -161,7 +198,10 @@ class Polynomial():
     new_p = Polynomial()
     self.b = dict()
     for i in self.D:
-      self.b[i-1] = (i*self.D[i])
+      if (i*self.D[i]) != 0:
+        self.b[i-1] = (i*self.D[i])
+      else:
+        pass
     new_p.D = self.b
     return new_p
 
@@ -175,50 +215,23 @@ class Polynomial():
     if len(self.D) != len(other.D):
       return False
     else:
-      for i in self.D and other.D:
-        if self.D[i] == other.D[i]:
-          return True
+      for i in self.D:
+        if i in other.D:
+          if other.D[i] != self.D[i]:
+            return False
         else:
-          return False
+            return False
+      return True
 
 
   def __ne__(self, other):
     if len(self.D) != len(other.D):
       return True
     else:
-      for i in self.D and other.D:
-        if self.D[i] == other.D[i]:
-          return False
+      for i in self.D:
+        if i in other.D:
+          if other.D[i] != self.D[i]:
+            return True
         else:
-          return True
-
-c = Polynomial([4,0,0,0])
-# c[-2] = 1
-d = Polynomial([3,0,0,0])
-print(c!=d)
-# g = c.deriv()
-# g = c.eval(3)
-# print(g)
-# c = Polynomial([5,0,0,4,6])
-# print(c[1])
-# c[-3] = 8
-# print(c[-3])
-# print(c[9])
-# print(c.D)
-
-# c = Polynomial([5.6,0,0,4+2j,6])
-# c = Polynomial([1,0,1])
-# c[-2] = 8
-# # c[-3] = 8
-# # d = Polynomial([2,1,1j,1,1])
-# d = Polynomial([1,1,3,0])
-# # d[100] = 12.3
-# # a = d+c
-# a = c*d
-# j = Polynomial()
-# j[-1]=-24
-# j[-2]=3
-# g = a+j
-# # print(c)
-# # print(d)
-# print(g)
+            return True
+      return False
